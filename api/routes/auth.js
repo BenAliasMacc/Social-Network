@@ -15,8 +15,8 @@ const createToken = (id) => {
 // REGISTER
 router.post('/register', async (req,res) => {
     
-    const { pseudo, email, password } = req.body;   
-
+    const { pseudo, email, password } = req.body;
+    
     try {
         const newUser = new User({ pseudo, email, password })
         const user = await newUser.save();
@@ -42,8 +42,6 @@ router.post('/login', async (req,res) => {
         const errors = loginErrors(error);
         res.status(200).json({ errors })
     }
-})
-
-
+});
 
 module.exports = router;

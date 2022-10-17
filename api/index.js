@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
+const postRoute = require('./routes/posts');
 const { checkUser, requireAuth } = require('./middleware/auth');
 const cookieParser = require('cookie-parser');
 
@@ -24,6 +25,7 @@ app.get('/jwtid', requireAuth, (req, res) => {
 // routes
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
+app.use('/api/post', postRoute);
 
 
 // server - Listen toujours à la fin

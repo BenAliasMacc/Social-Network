@@ -34,7 +34,7 @@ router.put('/:id', async (req, res) => {
         return res.status(400).send('Identifiant inconnu : ' + req.params.id);
 
     if(req.body.password && req.body.password.length >= 6 ) {
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt();
         req.body.password = await bcrypt.hash(req.body.password, salt);       
     } else {
         return res.status(500).send('Le mot de passe doit faire 6 caractéres minimum');
@@ -52,7 +52,7 @@ router.put('/:id', async (req, res) => {
         const errors = updateErrors(error);
         res.status(500).send({ errors });
     }
-}),
+});
 
 //Delete User
 router.delete('/:id', async (req, res) => {
@@ -65,9 +65,9 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-}),
+});
 
-// Add / Remove Follow
+// Add Follow
 router.patch('/follow/:id', async (req, res) => {
     if(!ObjectId.isValid(req.params.id) || !ObjectId.isValid(req.body.idToFollow)) 
         return res.status(400).send('Identifiant inconnu : ' + req.params.id);
@@ -99,8 +99,9 @@ router.patch('/follow/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-}),
+});
 
+// Remove Follow
 router.patch('/unfollow/:id', async (req, res) => {
     if(!ObjectId.isValid(req.params.id) || !ObjectId.isValid(req.body.idToUnFollow)) 
         return res.status(400).send('Identifiant inconnu : ' + req.params.id);
@@ -132,12 +133,12 @@ router.patch('/unfollow/:id', async (req, res) => {
     } catch (error) {
         res.status(500).send(error);
     }
-}),
+});
 
 // Logout
 router.post('/logout', async (req,res) => {
     res.cookie('jwt', '', { maxAge: 1 });
     res.redirect('/');
-})
+});
 
 module.exports = router;
