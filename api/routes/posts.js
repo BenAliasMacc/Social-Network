@@ -10,6 +10,8 @@ const {
     editComment, 
     deleteComment 
 } = require('../controller/posts');
+const multer = require('multer');
+const upload = multer();
 
 // Posts
 router.get('/', getPosts);
@@ -25,5 +27,8 @@ router.patch('/unlike-post/:id', unlikePost);
 router.patch('/comments/:id', addComment);
 router.patch('/edit-comments/:id', editComment);
 router.patch('/delete-comments/:id', deleteComment);
+
+// Upload
+router.post('/upload', upload.single('file'), createPost);
 
 module.exports = router;

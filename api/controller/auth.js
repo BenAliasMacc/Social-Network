@@ -21,7 +21,7 @@ module.exports.register = async (req,res) => {
         res.status(201).send(user._id);
     } catch (error) {
         const errors = registerErrors(error)
-        res.status(200).send({ errors });
+        res.status(500).send({ errors });
     };
 };
 
@@ -37,7 +37,8 @@ module.exports.login = async (req,res) => {
         const {password, ...others} = user._doc;
         res.status(200).json(others);
     } catch (error) {
+        console.log(error);
         const errors = loginErrors(error);
-        res.status(200).json({ errors })
+        res.status(404).json({ errors })
     }
 };

@@ -19,7 +19,7 @@ module.exports.getUser = async (req, res) => {
         return res.status(400).send('Identifiant inconnu : ' + req.params.id);
 
     try {
-        const users = await User.find().select('-password'); // On récupere les elements de la DB présent dans la table User, et on enléve le mdp de la réponse
+        const users = await User.findById(req.params.id); // On récupere les elements de la DB présent dans la table User, et on enléve le mdp de la réponse
         res.status(200).send(users);       
     } catch (error) {
         res.status(500).send(error);
@@ -33,7 +33,7 @@ module.exports.editUser = async (req, res) => {
         return res.status(400).send('Identifiant inconnu : ' + req.params.id);
 
     if(req.body.password && req.body.password.length >= 6 ) {
-        const salt = await bcrypt.genSalt();
+        const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(req.body.password, salt);       
     } else {
         return res.status(500).send('Le mot de passe doit faire 6 caractéres minimum');
@@ -45,7 +45,7 @@ module.exports.editUser = async (req, res) => {
                 $set: req.body,
             },
             { new: true }
-        ).select('-password');
+        );
         res.status(200).send(updateUser);       
     } catch (error) {
         const errors = updateErrors(error);
@@ -69,7 +69,7 @@ module.exports.deleteUser = async (req, res) => {
 // Add Follow
 module.exports.addFollow = async (req, res) => {
     if(!ObjectId.isValid(req.params.id) || !ObjectId.isValid(req.body.idToFollow)) 
-        return res.status(400).send('Identifiant inconnu : ' + req.params.id);
+        return res.status(400).send('Identifiant inconnu : ' + req.body.idToFollow);
 
     try {
         // add to the following list

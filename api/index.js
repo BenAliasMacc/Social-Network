@@ -7,9 +7,22 @@ const userRoute = require('./routes/users');
 const postRoute = require('./routes/posts');
 const { checkUser, requireAuth } = require('./middleware/auth');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const path = require('path');
 
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) // Chemin pour upload
+
+const corsOptions = {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'exposedHeaders': ['sessionId'],
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false
+}
+app.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
