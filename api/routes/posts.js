@@ -25,8 +25,8 @@ router.patch('/unlike-post/:id', unlikePost);
 
 // Comments
 router.patch('/comments/:id', addComment);
-router.patch('/edit-comments/:id', editComment);
-router.patch('/delete-comments/:id', deleteComment);
+router.patch('/edit-comment/:id', editComment);
+router.patch('/delete-comment/:id', deleteComment);
 
 // Upload
 router.post('/upload', upload.single('file'), createPost);

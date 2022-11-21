@@ -22,7 +22,7 @@ module.exports.createPost = async (req, res) => {
     let fileName;
     const { posterId, message, video } = req.body;
 
-    if(req.file !== null) {
+    if(req.file !== undefined) {
         try {
             if (
                 req.file.detectedMimeType != 'image/jpg' &&
@@ -48,19 +48,19 @@ module.exports.createPost = async (req, res) => {
         );
     };
 
+    const newPost = new Post({ 
+        posterId, 
+        message, 
+        video, 
+        likers: [], 
+        comments: [], 
+        picture: req.file !== null ? '../uploads/posts/' + fileName : '',
+    })
     try {
-        const newPost = new Post({ 
-            posterId, 
-            message, 
-            video, 
-            likers: [], 
-            comments: [], 
-            picture: req.file !== null ? '../uploads/posts/' + fileName : '',
-        })
         const post = await newPost.save();
         res.status(201).send(post);
     } catch (error) {
-        res.status(500).send(error);
+        res.status(400).send(error);
     }
 };
 
