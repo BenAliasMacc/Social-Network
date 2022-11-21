@@ -20,9 +20,8 @@ module.exports.getPosts = async (req, res) => {
 module.exports.createPost = async (req, res) => {
 
     let fileName;
-    const { posterId, message, video } = req.body;
 
-    if(req.file !== undefined) {
+    if(req.file !== null) {
         try {
             if (
                 req.file.detectedMimeType != 'image/jpg' &&
@@ -49,16 +48,16 @@ module.exports.createPost = async (req, res) => {
     };
 
     const newPost = new Post({ 
-        posterId, 
-        message, 
-        video, 
-        likers: [], 
-        comments: [], 
+        posterId: req.body.posterId, 
+        message: req.body.message, 
         picture: req.file !== null ? '../uploads/posts/' + fileName : '',
+        video: req.body.video,
+        likers: [], 
+        comments: [],
     })
     try {
         const post = await newPost.save();
-        res.status(201).send(post);
+        res.status(201).json(post);
     } catch (error) {
         res.status(400).send(error);
     }

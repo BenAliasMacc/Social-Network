@@ -15,7 +15,7 @@ const upload = multer();
 
 // Posts
 router.get('/', getPosts);
-router.post('/', createPost);
+router.post('/', upload.single('file'), createPost);
 router.put('/:id', editPost);
 router.delete('/:id', deletePost);
 
@@ -27,8 +27,5 @@ router.patch('/unlike-post/:id', unlikePost);
 router.patch('/comments/:id', addComment);
 router.patch('/edit-comment/:id', editComment);
 router.patch('/delete-comment/:id', deleteComment);
-
-// Upload
-router.post('/upload', upload.single('file'), createPost);
 
 module.exports = router;
