@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) // Chemin pour upload
 
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: process.env.CLIENT_URL || ,
     credentials: true,
     'allowedHeaders': ['sessionId', 'Content-Type'],
     'exposedHeaders': ['sessionId'],
