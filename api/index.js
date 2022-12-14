@@ -6,6 +6,8 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
 const postRoute = require('./routes/posts');
 const { checkUser, requireAuth } = require('./middleware/auth');
+const credentials = require('./middleware/credentials');
+const allowedOrigins = require('./config/allowedOrigins');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
@@ -14,14 +16,18 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) // Chemin pour upload
 
+app.use(credentials);
+
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-    'allowedHeaders': ['sessionId', 'Content-Type'],
-    'exposedHeaders': ['sessionId'],
-    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    'preflightContinue': false
-}
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionsSuccessStatus: 200
+};
 app.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -39,7 +45,6 @@ app.get('/jwtid', requireAuth, (req, res) => {
 app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/post', postRoute);
-
 
 // server - Listen toujours à la fin
 app.listen(process.env.PORT, () => {
