@@ -6,11 +6,12 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/users');
 const postRoute = require('./routes/posts');
 const { checkUser, requireAuth } = require('./middleware/auth');
-const { credentials } = require('./middleware/credentials');
+const credentials = require('./middleware/credentials');
 const allowedOrigins = require('./config/allowedOrigins');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cookieParser());
@@ -47,6 +48,6 @@ app.use('/api/user', userRoute);
 app.use('/api/post', postRoute);
 
 // server - Listen toujours à la fin
-app.listen(process.env.PORT, () => {
-    console.log(`Backend is running on port ${process.env.PORT}`);    
+app.listen(PORT, () => {
+    console.log(`Backend is running on port ${PORT}`);    
 });
