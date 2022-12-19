@@ -22,28 +22,17 @@ app.use(logger);
 
 app.use(credentials);
 
-app.use(cors())
-
-/*Cross Origin Resource Sharing. système de sécurité qui, par défaut, bloque les appels HTTP entre des serveurs différents, 
-ce qui empêche donc les requêtes malveillantes d'accéder à des ressources sensibles*/
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Autorise toutes les oigines à utiliser l'api
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // type des différents header
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS', 'HEAD'); // méthodes
-    next(); // méthode next permet à chaque middleware de passer l'exécution au middleware suivant
-});
-
-// const corsOptions = {
-//     origin: (origin, callback) => {
-//         if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-//             callback(null, true)
-//         } else {
-//             callback(new Error('Not allowed by CORS'));
-//         }
-//     },
-//     optionsSuccessStatus: 200
-// };
-// app.use(cors(corsOptions));
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
