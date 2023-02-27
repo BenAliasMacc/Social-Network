@@ -8,30 +8,22 @@ const postRoute = require('./routes/posts');
 const { checkUser, requireAuth } = require('./middleware/auth');
 const { logger } = require('./middleware/logEvents');
 const credentials = require('./middleware/credentials');
-const allowedOrigins = require('./config/allowedOrigins');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
+
 app.use(cookieParser());
-app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) // Chemin pour upload
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Chemin pour upload
 
 app.use(logger);
 
 app.use(credentials);
 
-const corsOptions = {
-    origin: (origin, callback) => {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    optionsSuccessStatus: 200
-};
 app.use(cors(corsOptions));
 
 mongoose.connect(process.env.MONGO_URL, {
