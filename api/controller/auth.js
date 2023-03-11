@@ -26,19 +26,16 @@ module.exports.register = async (req,res) => {
 };
 
 // LOGIN
-module.exports.login = async (req,res) => {
-
+module.exports.login = async (req, res) => {
+  
     try {
-        const user = await User.login(req.body.email, req.body.password);
-
-        const token = createToken(user._id);
-        res.cookie('jwt', token, { httpOnly: true, maxAge })
-
-        const {password, ...others} = user._doc;
-        res.status(200).json(others);
-    } catch (error) {
-        console.log(error);
-        const errors = loginErrors(error);
-        res.status(404).json({ errors })
+      const user = await User.login(req.body.email, req.body.password);
+      const token = createToken(user._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge});
+      const {password, ...others} = user._doc;
+      res.status(200).json(others);
+    } catch (err){
+      const errors = loginErrors(err);
+      res.status(200).json({ errors });
     }
-};
+}
