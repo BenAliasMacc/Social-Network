@@ -15,7 +15,7 @@ const path = require('path');
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) // Chemin pour upload
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 app.use(credentials);
 app.use(cors(corsOptions));
@@ -38,5 +38,5 @@ app.use('/api/post', postRoute);
 
 // server - Listen toujours à la fin
 app.listen(process.env.PORT, () => {
-    console.log(`Backend is running on port ${process.env.PORT}`);    
+    console.log(`Backend is running on port ${process.env.PORT}`);
 });

@@ -21,45 +21,45 @@ module.exports.createPost = async (req, res) => {
 
     let fileName;
 
-    if(req.file !== null) {
-        try {
-            if (
-                req.file.detectedMimeType != 'image/jpg' &&
-                req.file.detectedMimeType != 'image/png' &&
-                req.file.detectedMimeType != 'image/jpeg'
+    if(req.file !== null && req.file !== undefined) {
+        // try {
+        //     if (                
+        //         req.file.detectedMimeType != 'image/jpg' &&
+        //         req.file.detectedMimeType != 'image/png' &&
+        //         req.file.detectedMimeType != 'image/jpeg'
     
-            ) throw Error('Invalid file');
+        //     ) throw Error('Invalid file');
     
-            if (req.file.size > 500000) throw Error('Max size')
+        //     if (req.file.size > 500000) throw Error('Max size')
             
-        } catch (error) {
-            const errors = uploadErrors(error);
-            res.status(201).json({ errors });
-        };
+        // } catch (error) {
+        //     const errors = uploadErrors(error);
+        //     return res.status(201).json({ errors });
+        // };
     
         fileName = req.body.posterId + Date.now() + '.jpg';
 
-        await pipeline(
-            req.file.stream,
-            fs.createWriteStream(
-                `${__dirname}/../uploads/posts/${fileName}`
-            )
-        );
+        if (req.file.buffer) {
+            
+            await fs.promises.writeFile(`${__dirname}/../uploads/posts/${fileName}`, req.file.buffer);
+        } else {
+            console.log('req.file.buffer is undefined');
+        }
     };
 
     const newPost = new Post({ 
         posterId: req.body.posterId, 
         message: req.body.message, 
-        picture: req.file !== null ? '../uploads/posts/' + fileName : '',
+        picture: req.file !== null && req.file !== undefined ? './uploads/posts/' + fileName : '',
         video: req.body.video,
         likers: [], 
         comments: [],
     })
     try {
         const post = await newPost.save();
-        res.status(201).json(post);
+        return res.status(201).json(post);
     } catch (error) {
-        res.status(400).send(error);
+        return res.status(400).send(error);
     }
 };
 
@@ -182,29 +182,32 @@ module.exports.addComment = async (req, res) => {
 
 // Edit Comment
 module.exports.editComment = async (req, res) => {
-    if(!ObjectId.isValid(req.params.id)) 
-        return res.status(400).send('Identifiant inconnu : ' + req.params.id);
+    const { id } = req.params;
+    const { commentId, text } = req.body;
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).send(`Identifiant inconnu : ${id}`);
+    }
 
     try {
-        return Post.findById(
-            req.params.id,
-            (err, docs) => {
-                const commentToEdit = docs.comments.find((comment) => 
-                    comment._id.equals(req.body.commentId)
-                )
-                
-                if(!commentToEdit) return res.status(404).send('Commentaire introuvable');
-                commentToEdit.text = req.body.text;
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).send('Publication introuvable');
+        }
 
-                return docs.save((error) => {
-                    if(!error) return res.status(200).send(docs);
-                    return res.status(500).send(error);
-                })
+        const commentToEdit = post.comments.find((comment) => 
+            comment._id.equals(commentId)
+        );
+        if (!commentToEdit) {
+            return res.status(404).send('Commentaire introuvable');
+        }
 
-            }
-        )
+        commentToEdit.text = text;
+        await post.save();
+
+        return res.status(200).send(post);
     } catch (error) {
-        return res.status(400).send(error);
+        return res.status(500).send(error);
     }
 
     // try {

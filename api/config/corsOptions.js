@@ -10,9 +10,9 @@ const corsOptions = {
     },
     credentials: true,
     'allowedHeaders': ['sessionId', 'Content-Type'],
-    'exposedHeaders': ['sessionId'],
+    'exposedHeaders': ['sessionId', 'set-cookie'],
     'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    'preflightContinue': false,
+    'preflightContinue': true,
     optionsSuccessStatus: 200
 };
 

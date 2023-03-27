@@ -32,10 +32,15 @@ module.exports.login = async (req, res) => {
       const user = await User.login(req.body.email, req.body.password);
       const token = createToken(user._id);
       res.cookie('jwt', token, { httpOnly: true, maxAge});
-      const {password, ...others} = user._doc;
-      res.status(200).json(others);
+      res.status(200).json({ user: user._id});
     } catch (err){
       const errors = loginErrors(err);
       res.status(200).json({ errors });
     }
 }
+
+// LOGOUT
+module.exports.logout = async (req,res) => {
+    res.cookie('jwt', '', { maxAge: 1 });
+    res.redirect('/');
+};

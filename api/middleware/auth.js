@@ -30,9 +30,10 @@ module.exports.requireAuth = (req, res, next) => {
             } else {
                 console.log(decodedToken);
                 next();
+            
             }
         })
     } else {
-        console.log('No Token');
+        throw new Error('No Token');
     }
 }

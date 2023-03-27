@@ -133,9 +133,3 @@ module.exports.removeFollow = async (req, res) => {
         res.status(500).send(error);
     }
 };
-
-// Logout
-module.exports.logout = async (req,res) => {
-    res.cookie('jwt', '', { maxAge: 1 });
-    res.redirect('/');
-};
