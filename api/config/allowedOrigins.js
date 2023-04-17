@@ -1,6 +1,6 @@
 const allowedOrigins = [,
     'http://localhost:3000',
-    'https://rayscheep-family.onrender.com',
+    'https://the-network-xre0.onrender.com/',
     
 ];
 
