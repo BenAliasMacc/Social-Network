@@ -15,11 +15,7 @@ const path = require('path');
 app.use(express.json());
 app.use(cookieParser());
 
-app.use('/uploads', express.static(path.join(__dirname, '/uploads'), {
-    maxAge: '1d',
-    etag: false,
-    lastModified: false,
-}))
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use(credentials);
 app.use(cors(corsOptions));
